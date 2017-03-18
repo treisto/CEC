@@ -3,7 +3,7 @@ import fnmatch
 import copy
 import inspect
 import re
-import  numpy 
+import numpy 
 
 INF=1e+8
 
@@ -94,22 +94,21 @@ class Benchmark:
 
     def violation_constraint(self,i):
         value = self.evaluate_left_hand_side_constraint(i)
-    	if self.senses[i] == -1:
-                if value <= self.rhs[i]:
-    			return 0
-
-    		else:
-    			return value - self.rhs[i]
-    	if self.senses[i] == 0:
-    		if abs(value - self.rhs[i])<=self.tolerance:
-    			return 0
-    		else:
-    			return abs(value-self.rhs[i])
-    	if self.senses[i] == 1:
-    		if value >= self.rhs[i]:
-                    return 0
-    		else:
-    	            return self.rhs[i] - value
+        if self.senses[i] == -1:
+            if value <= self.rhs[i]:
+                return 0
+            else:
+                return value - self.rhs[i]
+        if self.senses[i] == 0:
+            if abs(value - self.rhs[i])<=self.tolerance:
+                return 0
+            else:
+                return abs(value-self.rhs[i])
+        if self.senses[i] == 1:
+            if value >= self.rhs[i]:
+                return 0
+            else:
+                return self.rhs[i] - value
 
     def is_constraint_satisfied(self,i):
         return self.violation_constraint(i) == 0
