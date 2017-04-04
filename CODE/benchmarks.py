@@ -3,7 +3,8 @@ import fnmatch
 import copy
 import inspect
 import re
-import  numpy 
+import numpy
+import math
 
 INF=1e+8
 
@@ -14,17 +15,25 @@ class Benchmark:
     def __init__(self,**args):
         self.best_know=None
         self.x=[]
-        self.constraints=[]
         self.senses=[]
         self.rhs=[]
         self.bounds=[]
         self.objectives=[]
-        methods_name = self.__class__.__dict__.keys()
-        cstr_name = [m  for m in methods_name if fnmatch.fnmatch(m,"g_*")]
-        sort_name = sorted(cstr_name,key=lambda name: int(name.split("_")[1]))
+
         self.constraints=[]
+        methods_name = self.__class__.__dict__.keys()
+
+        cstr_name = [m for m in methods_name if fnmatch.fnmatch(m,"g_*")]
+        sort_name = sorted(cstr_name,key=lambda name: int(name.split("_")[1]))
         for i in range(len(sort_name)):
             self.constraints.append(self.__class__.__dict__[sort_name[i]])
+
+        # add h_1, h_2,... constraints
+        cstr_name = [m for m in methods_name if fnmatch.fnmatch(m,"h_*")]
+        sort_name = sorted(cstr_name,key=lambda name: int(name.split("_")[1]))
+        for i in range(len(sort_name)):
+            self.constraints.append(self.__class__.__dict__[sort_name[i]])
+
         name_obj = [m for m in methods_name if fnmatch.fnmatch(m,"obj_*") ]
         sort_name = sorted(name_obj,key=lambda name: int(name.split("_")[1]))
         for i in range(len(sort_name)):
@@ -94,22 +103,21 @@ class Benchmark:
 
     def violation_constraint(self,i):
         value = self.evaluate_left_hand_side_constraint(i)
-    	if self.senses[i] == -1:
-                if value <= self.rhs[i]:
-    			return 0
-
-    		else:
-    			return value - self.rhs[i]
-    	if self.senses[i] == 0:
-    		if abs(value - self.rhs[i])<=self.tolerance:
-    			return 0
-    		else:
-    			return abs(value-self.rhs[i])
-    	if self.senses[i] == 1:
-    		if value >= self.rhs[i]:
-                    return 0
-    		else:
-    	            return self.rhs[i] - value
+        if self.senses[i] == -1:
+            if value <= self.rhs[i]:
+                return 0
+            else:
+                return value - self.rhs[i]
+        if self.senses[i] == 0:
+            if abs(value - self.rhs[i])<=self.tolerance:
+                return 0
+            else:
+                return abs(value-self.rhs[i])
+        if self.senses[i] == 1:
+            if value >= self.rhs[i]:
+                return 0
+            else:
+                return self.rhs[i] - value
 
     def is_constraint_satisfied(self,i):
         return self.violation_constraint(i) == 0
@@ -182,11 +190,3 @@ class G04(Benchmark):
 
     def g_6(self):
         return (-1.0)*self.g_5() - 5
-
-if  __name__ == "__main__":
-   g=G04()
-   g.unset_var()
-   g.set_var([78, 33, 27,27,27])
-   for i in range(g.nconstraints()):
-       print(g.violation_constraint(i)) 
-   print(g.evaluate_objectives(0))
