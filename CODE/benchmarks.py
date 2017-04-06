@@ -154,3 +154,686 @@ class Benchmark:
         #    assert( liste[i] >= self.bounds[i][0] and liste[i] <= self.bounds[i][1])
 
 
+class C00(Benchmark):
+    def __init__(self, D=None, x=None, senses=None, bounds=None):
+        # parent class constructor
+        Benchmark.__init__(self)
+        # extract problem number from class name
+        problemno = int(self.__class__.__name__[1:])
+        # load shift dataset
+        self.o = numpy.loadtxt("./inputData/shift_data_" + str(problemno) + ".txt",dtype=numpy.float32)
+        # default values
+        self.D = D or 10
+        self.D2 = int(self.D/2)
+        self.x = x or [78, 33, 27, 27, 27, 0, 0, 0, 0, 0]
+        self.set_var(self.x)
+        self.senses = senses or [-1]
+        self.rhs = [0]*len(self.senses)
+        bounds = bounds or (-100,100)
+        self.bounds = [bounds] * self.D
+        # checks
+        self.test_assert()
+
+class C01(C00):
+
+    def __init__(self):
+        C00.__init__(self)
+        self.z=self.x-self.o[:self.D]
+
+    def obj_1(self):
+        result=0
+        for i in range (self.D):
+            SumZ = 0.0
+            for j in range (i):
+                SumZ += self.z[j]
+            result += SumZ**2
+        return result
+
+    def g_1(self):
+        return sum([ z * z - 5000 * math.cos(0.1 * math.pi * z) - 4000 for z in self.z])
+
+class C02(C00):
+
+    def __init__(self):
+        C00.__init__(self, bounds=(-10,10))
+
+    def setup(self):
+        self.M = numpy.loadtxt("./inputData/M_2_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = self.x - self.o[:self.D]
+        self.y = numpy.dot(self.M, self.z)
+
+    def obj_1(self):
+        self.setup()
+        result = 0.0
+        for i in range(self.D):
+            SumZ = 0.0
+            for j in range (i):
+                SumZ += self.z[j]
+            result = SumZ**2
+        return result
+
+    def g_1(self):
+        self.setup()
+        return sum([ y * y - 5000 * math.cos(0.1 * math.pi * y) - 4000 for y in self.y ])
+
+class C03(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0], bounds=(-10,10))
+
+    def setup(self):
+        self.z=self.x-self.o[:self.D]
+
+    def obj_1(self):
+        self.setup()
+        result = 0.0
+        for i in range (0, self.D):
+            SumZ = 0.0
+            for j in range (0, i):
+                SumZ += self.z[i]
+            result += SumZ**2
+        return result
+
+    def g_1(self):
+        self.setup()
+        return sum([ z * z - 5000.0 * math.cos(0.1 * math.pi * z) - 4000.0 for z in self.z ])
+
+    def g_2(self):
+        self.setup()
+        return - sum([ z * math.sin(0.1 * math.pi * z) for z in self.z ])
+
+class C04(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1], bounds=(-10,10))
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+
+    def obj_1(self):
+        self.setup()
+        return sum([ z * z - 10 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+
+    def g_1(self):
+        self.setup()
+        return - sum([ z * math.sin(2 * z) for z in self.z ])
+
+    def g_2(self):
+        self.setup()
+        return sum([ z * math.sin(z) for z in self.z ])
+
+class C05(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1], bounds=(-10,10))
+
+    def setup(self):
+        self.M1 = numpy.loadtxt("./inputData/M1_5_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.M2 = numpy.loadtxt("./inputData/M2_5_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = self.x - self.o[:self.D]
+        self.y = numpy.dot(self.M1, self.z)
+        self.w = numpy.dot(self.M2, self.z)
+
+    def obj_1(self):
+        self.setup()
+        z = self.z
+        result = 0.0
+        for i in range (self.D - 1):
+            result += 100.0 * (z[i] * z[i] - z[i+1]) ** 2 + (z[i] - 1) ** 2
+        return result
+
+    def g_1(self):
+        self.setup()
+        return sum([ y * y - 50.0 * math.cos(2 * math.pi * y) - 40.0 for y in self.y ])
+
+    def g_2(self):
+        self.setup()
+        return sum([ w * w - 50.0 * math.cos(2 * math.pi * w) - 40.0 for w in self.w ])
+
+class C06(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[0]*6, bounds=(-20,20))
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+
+    def obj_1(self):
+        self.setup()
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+
+    def g_1(self):
+        self.setup()
+        return -sum([z * math.sin(z) for z in self.z])
+
+    def g_2(self):
+        self.setup()
+        return sum([z * math.sin(math.pi * z) for z in self.z])
+
+    def g_3(self):
+        self.setup()
+        return -sum([z * math.cos(z) for z in self.z])
+
+    def g_4(self):
+        self.setup()
+        return sum([z * math.sin(math.pi * z) for z in self.z])
+
+    def g_5(self):
+        self.setup()
+        return sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in self.z])
+
+    def g_6(self):
+        self.setup()
+        return -sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in self.z])
+
+class C07(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[0, 0], bounds=(-50,50))
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+
+    def obj_1(self):
+        self.setup()
+        return sum([ z * math.sin(z) for z in self.z ])
+
+    def g_1(self):
+        self.setup()
+        return sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in self.z ])
+
+    def g_2(self):
+        self.setup()
+        return - sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in self.z ])
+
+class C08(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[0, 0])
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+        self.y = []
+        self.w = []
+        z = list(self.z)
+        while z:
+            self.w.insert(0, z.pop())
+            self.y.insert(0, z.pop())
+
+    def obj_1(self):
+        self.setup()
+        return max(self.z)
+
+    def g_1(self):
+        self.setup()
+        result = 0.0
+        for i in range(self.D2):
+            SumY = 0.0
+            for j in range(i):
+                SumY += self.y[j]
+            result = SumY**2
+        return result
+
+
+    def g_2(self):
+        self.setup()
+        result = 0.0
+        for i in range(self.D2):
+            SumW = 0.0
+            for j in range(i):
+                SumW += self.w[j]
+            result = SumW**2
+        return result
+
+class C09(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0], bounds=(-10,10))
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+        self.y = []
+        self.w = []
+        z = list(self.z)
+        while z:
+            self.w.insert(0, z.pop())
+            self.y.insert(0, z.pop())
+
+    def obj_1(self):
+        self.setup()
+        return max(self.z)
+
+    def g_1(self):
+        self.setup()
+        result = 1.0
+        for i in range(self.D2):
+            result = result * self.w[i]
+        return result
+
+    def g_2(self):
+        self.setup()
+        result = 0.0
+        for i in range(self.D2-1):
+            result += (self.y[i] * self.y[i] - self.y[i+1]) ** 2
+        return result
+
+class C10(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[0, 0])
+
+    def setup(self):
+        self.z = self.x - self.o[:self.D]
+
+    def obj_1(self):
+        self.setup()
+        return max(self.z)
+
+    def g_1(self):
+        self.setup()
+        result = 0.0
+        for i in range (self.D):
+            SumZ = 0.0
+            for j in range (i):
+                SumZ += self.z[i]
+            result += SumZ**2
+        return result
+
+    def g_2(self):
+        self.setup()
+        result = 0.0
+        for i in range(self.D-1):
+            result += (self.z[i] - self.z[i+1]) ** 2
+        return result
+
+class C11(C00):
+
+    def obj_1(self):
+        self.z = self.x - self.o[:self.D]
+        return sum(self.z)
+
+    def g_1(self):
+        result = 1.0
+        for i in range(self.D):
+            result = result * self.z[i]
+        return result
+
+    def g_2(self):
+        'same as C10.h_2'
+        result = 0.0
+        for i in range(self.D-1):
+            result += (self.z[i] - self.z[i+1]) ** 2
+        return result
+
+class C12(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ])
+
+    def g_1(self):
+        return 4 - sum([ abs(y) for y in self.y ])
+
+    def g_2(self):
+        return sum([ y * y for y in self.y ]) - 4
+
+class C13(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        y = self.y
+        result = 0.0
+        for i in range(self.D-1):
+            result += 100.0 * (y[i] * y[i] - y[i+1]) ** 2 + (y[i] - 1) ** 2
+        return result
+
+    def g_1(self):
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ]) - 100.0
+
+    def g_2(self):
+        return sum([ y for y in self.y ]) - 2 * self.D
+
+    def g_3(self):
+        return 5.0 - sum([ y for y in self.y ])
+
+class C14(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        return (-20.0 * math.exp(-0.2 * math.sqrt(1.0/self.D * sum([ y * y for y in self.y ])))
+            + 20.0 - math.exp( 1.0/self.D * sum([ math.cos(2 * math.pi * y) for y in self.y ]) )
+            + math.e)
+
+    def g_1(self):
+        return sum([ y * y for y in self.y[1:] + 1 - abs(self.y[0]) ])
+
+    def g_2(self):
+        return sum([ y * y for y in self.y ]) - 4
+
+class C15(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        return max([ abs(y) for y in self.y ])
+
+    def g_1(self):
+        return sum([ y*y for y in self.y ]) - 100.0 * self.D
+
+    def g_2(self):
+        fx = max([ abs(y) for y in self.y ])
+        return math.cos(fx) + math.sin(fx)
+
+class C16(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        return sum([ abs(y) for y in self.y ])
+
+    def g_1(self):
+        return sum([ y*y for y in self.y ]) - 100.0 * self.D
+
+    def g_2(self):
+        fx = sum([ abs(y) for y in self.y ])
+        return (math.cos(fx) + math.sin(fx)) ** 2 - math.exp(math.cos(fx) + math.sin(fx)) - 1 + math.exp(1)
+
+class C17(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        product = 1.0
+        for i in range(self.D):
+            product = product * (math.cos(self.y[i] / math.sqrt(i+1)))
+        return 1.0/4000.0 * sum([ y * y for y in self.y ]) + 1.0 - product
+
+    def g_1(self):
+        result = 0.0
+        for i in range(self.D):
+            SumY = 0.0
+            for j in range(self.D):
+                if not i == j:
+                    SumY += self.y[j] * self.y[j]
+            result += numpy.sign(abs(self.y[i]) - SumY - 1.0)
+        return 1.0 - result
+
+    def g_2(self):
+        return sum([ y * y for y in self.y ]) - 4 * self.D
+
+class C18(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.z = []
+        for y in self.y:
+            if abs(y) < 0.5:
+                self.z.append(y)
+            else:
+                self.z.append(0.5 * round(2.0 * y))
+        return sum([ z * z - math.cos(2.0 * math.pi * z) + 10.0 for z in self.z ])
+
+    def g_1(self):
+        return 1.0 - sum([ abs(y) for y in self.y ])
+
+    def g_2(self):
+        return sum([ y * y for y in self.y ]) - 100.0 * self.D
+
+    def g_3(self):
+        result = 1.0
+        for i in range(self.D):
+            result = result * (math.sin(self.y[i] - 1) ** 2) * math.pi
+        for i in range(self.D-1):
+            result += 100.0 * (self.y[i] * self.y[i] - self.y[i+1]) ** 2
+        return result
+
+class C19(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        return sum([ math.sqrt(abs(y)) + 2 * math.sin(y * y * y) for y in self.y ])
+
+    def g_1(self):
+        result = 0.0
+        for i in range(self.D-1):
+            result += -10.0 * math.exp(-0.2 * math.sqrt(self.y[i] ** 2 + self.y[i+1] ** 2)) + (self.D - 1) * 10.0 / math.exp(-5.0)
+        return result
+
+    def g_2(self):
+        return sum([ math.sin(2.0 * y) **2 for y in self.y ]) - 0.5 * self.D
+
+class C20(C00):
+
+    def g(self, y1, y2):
+        return 0.5 + ( math.sin(math.sqrt(y1 * y1 + y2 * y2)) ** 2 + 0.5) / (1.0 + 0.001 * math.sqrt(y1 * y1 + y2 * y2)) ** 2
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        result = 0.0
+        for i in range(self.D-1):
+            result += self.g(self.y[i], self.y[i+1])
+        return result + self.g(self.y[self.D-1], self.y[0])
+
+    def g_1(self):
+        s = sum([ y * y for y in self.y ])
+        return math.cos(s) ** 2 - 0.25 * math.cos(s) - 0.125
+
+    def g_2(self):
+        s = sum([ y * y for y in self.y ])
+        return math.exp(math.cos(s)) - math.exp(0.25)
+
+class C21(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_21_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ])
+
+    def g_1(self):
+        return 4.0 - sum([ abs(z) for z in self.z ])
+
+    def g_2(self):
+        return sum([ z * z for z in self.z ]) - 4.0
+
+class C22(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_22_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        result = 0.0
+        for i in range(self.D):
+            result += 100 * (self.z[i] ** 2 - self.x[i] ** 2) ** 2 + (self.z[i] - 1.0) ** 2
+        return result
+
+    def g_1(self):
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ]) - 100.0
+
+    def g_2(self):
+        return sum(self.z) - 2.0 * self.D
+
+    def g_3(self):
+        return 5.0 - sum(self.z)
+
+class C23(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_23_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        z2 = sum([ z * z for z in self.z ])
+        cosz = sum([ math.cos(2 * math.pi * z) for z in self.z ])
+        return -20.0 * math.exp(-0.2 * math.sqrt(1.0/self.D * z2)) + 20.0 - math.exp(1.0/self.D * cosz) + math.e
+
+    def g_1(self):
+        result = 0.0
+        for i in range(1, self.D):
+            result += self.z[i] ** 2
+        return result + 1.0 - abs(self.z[0])
+
+    def g_2(self):
+        return sum([ z * z for z in self.z]) - 4.0
+
+class C24(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_24_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        self.fz = max([ abs(z) for z in self.z ])
+        return self.fz
+
+    def g_1(self):
+        return sum([ z * z for z in self.z]) - 100.0 * self.D
+
+    def g_2(self):
+        return math.cos(self.fz) + math.sin(self.fz)
+
+class C25(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_25_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        self.fz = sum([ abs(z) for z in self.z ])
+        return self.fz
+
+    def g_1(self):
+        return sum([ z * z for z in self.z]) - 100.0 * self.D
+
+    def g_2(self):
+        return (math.cos(self.fz) + math.sin(self.fz)) ** 2 - math.exp(math.cos(self.fz) + math.sin(self.fz)) - 1.0 + math.exp(1.0)
+
+class C26(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_26_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        product = 1.0
+        for i in range(self.D):
+            product = product * math.cos(self.y[i] / math.sqrt(i+1))
+        return 1.0/4000.0 * sum([ y * y for y in self.y ]) + 1.0 - product
+
+    def g_1(self):
+        result = 0.0
+        for i in range(self.D):
+            sumz = 0.0
+            for j in range(self.D):
+                if not i == j:
+                    sumz += self.z[j] ** 2
+            result += numpy.sign(abs(self.z[i]) - sumz - 1.0)
+        return 1.0 - result
+
+    def g_2(self):
+        return sum([ z * z for z in self.z]) - 4.0 * self.D
+
+class C27(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_27_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+
+    def g_1(self):
+        return 1.0 - sum([ abs(y) for y in self.y ])
+
+    def g_2(self):
+        return sum([ z * z for z in self.z]) - 100.0 * self.D
+
+    def g_3(self):
+        product = 1.0
+        for i in range(self.D):
+            product = product * math.sin(self.y[i] - 1.0) ** 2 * math.pi
+        result = 0.0
+        for i in range(self.D-1):
+            result += 100.0 * (self.y[i] ** 2 - self.y[i+1]) ** 2
+        return result + product
+
+class C28(C00):
+
+    def obj_1(self):
+        self.y = self.x - self.o[:self.D]
+        self.M = numpy.loadtxt("./inputData/M_28_D" + str(self.D) + ".txt", dtype=numpy.float32)
+        self.z = numpy.dot(self.M, self.y)
+        return sum([ math.sqrt(abs(z)) + 2.0 * math.sin(z * z * z) for z in self.z ])
+
+    def g_1(self):
+        result = 0.0
+        for i in range(self.D-1):
+            result += -10.0 * math.exp(-0.2 * math.sqrt(self.z[i] ** 2 + self.z[i+1] ** 2))
+        return 1.0 - sum([ abs(y) for y in self.y ]) + (self.D - 1.0) * 10.0 / math.exp(-5)
+
+    def g_2(self):
+        return sum([ math.sin(2.0 * z) ** 2 for z in self.z]) - 0.5 * self.D
+
+if  __name__ == "__main__":
+
+    def test_problem(cls):
+        g = cls()
+        print("= " + cls.__name__ + " ===============")
+        print("= Constraint violations:")
+        for i in range(g.nconstraints()):
+            print(g.violation_constraint(i))
+        print("= Objectives:")
+        print(g.evaluate_objectives(0))
+
+    test_problem(C01)
+    test_problem(C02)
+    test_problem(C03)
+    test_problem(C04)
+    test_problem(C05)
+    test_problem(C06)
+    test_problem(C07)
+    test_problem(C08)
+    test_problem(C09)
+    test_problem(C10)
+    # test_problem(C11, senses=[-1, 0])
+    # test_problem(C12, senses=[-1, 0])
+    # test_problem(C13, senses=[-1, -1, -1])
+    # test_problem(C14, senses=[-1, 0])
+    # test_problem(C15, senses=[-1, 0])
+    # test_problem(C16, senses=[-1, 0])
+    # test_problem(C17, senses=[-1, 0])
+    # test_problem(C18, senses=[-1, -1, 0])
+    # test_problem(C19, senses=[-1, -1], bounds=(-50,50))
+    # test_problem(C20, senses=[-1, -1])
+    # test_problem(C21, senses=[-1, 0])
+    # test_problem(C22, senses=[-1, -1, -1])
+    # test_problem(C23, senses=[-1, 0])
+    # test_problem(C24, senses=[-1, 0])
+    # test_problem(C25, senses=[-1, 0])
+    # test_problem(C26, senses=[-1, 0])
+    # test_problem(C27, senses=[-1, -1, 0])
+    # test_problem(C28, senses=[-1, -1], bounds=(-50,50))
+
+class G04(Benchmark):
+
+    def __init__(self,**args):
+        Benchmark.__init__(self,**args)
+        self.best_know=-30665.5387
+        self.x=[None for i in range(5)]
+        self.rhs=[0]*6
+        self.senses = [-1]*6
+        self.bounds=[(78,102),(33,45),(27,45),(27,45),(27,45)]
+        self.test_assert()
+
+    def obj_1(self):
+        return 5.3578547*numpy.power(self.x[2],2) + 0.8356891*self.x[0]*self.x[4] + 37.293239*self.x[0] - 40792.141
+
+    def g_1(self):
+        return 85.334407 + 0.0056858*self.x[1]*self.x[4]+0.0006262*self.x[0]*self.x[3] - 0.0022053*self.x[2]*self.x[4] -92
+
+    def g_2(self):
+        return (-1.0)*self.g_1() - 92
+
+    def g_3(self):
+        return 80.51249+0.0071317*self.x[1]*self.x[4] + 0.0029955*self.x[0]*self.x[1] + 0.0021813*numpy.power(self.x[2],2)-110
+
+    def g_4(self):
+        return -(1.0)*self.g_3() - 20
+
+    def g_5(self):
+        return 9.300961+0.0047026*self.x[2]*self.x[4]+0.0012547*self.x[0]*self.x[2]+0.0019085*self.x[2]*self.x[3] - 25
+
+    def g_6(self):
+        return (-1.0)*self.g_5() - 5
