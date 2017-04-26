@@ -314,20 +314,17 @@ class C07(C00):
     def __init__(self):
         C00.__init__(self, senses=[0, 0], bounds=(-50,50))
 
-    def setup(self):
-        self.z = self.x - self.o[:self.D]
-
     def obj_1(self):
-        self.setup()
-        return sum([ z * math.sin(z) for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return sum([ z * math.sin(z) for z in zz ])
 
     def g_1(self):
-        self.setup()
-        return sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in zz ])
 
     def g_2(self):
-        self.setup()
-        return - sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return - sum([ z - 100.0 * math.cos(0.5 * z) + 100.0 for z in zz ])
 
 class C08(C00):
 
@@ -336,35 +333,45 @@ class C08(C00):
 
     def setup(self):
         self.z = self.x - self.o[:self.D]
+        z = list(self.z)
         self.y = []
         self.w = []
-        z = list(self.z)
         while z:
             self.w.insert(0, z.pop())
             self.y.insert(0, z.pop())
 
     def obj_1(self):
-        self.setup()
-        return max(self.z)
+        z = self.x - self.o[:self.D]
+        return max(z)
 
     def g_1(self):
-        self.setup()
+        z = list(self.x - self.o[:self.D])
+        y = []
+        w = []
+        while z:
+            w.insert(0, z.pop())
+            y.insert(0, z.pop())
         result = 0.0
         for i in range(self.D2):
             SumY = 0.0
             for j in range(i):
-                SumY += self.y[j]
+                SumY += y[j]
             result = SumY**2
         return result
 
 
     def g_2(self):
-        self.setup()
+        z = list(self.x - self.o[:self.D])
+        y = []
+        w = []
+        while z:
+            w.insert(0, z.pop())
+            y.insert(0, z.pop())
         result = 0.0
         for i in range(self.D2):
             SumW = 0.0
             for j in range(i):
-                SumW += self.w[j]
+                SumW += w[j]
             result = SumW**2
         return result
 
