@@ -216,26 +216,24 @@ class C03(C00):
     def __init__(self):
         C00.__init__(self, senses=[-1, 0], bounds=(-10,10))
 
-    def setup(self):
-        self.z=self.x-self.o[:self.D]
 
     def obj_1(self):
-        self.setup()
+        z = self.x-self.o[:self.D]
         result = 0.0
         for i in range (0, self.D):
             SumZ = 0.0
             for j in range (0, i):
-                SumZ += self.z[i]
+                SumZ += z[i]
             result += SumZ**2
         return result
 
     def g_1(self):
-        self.setup()
-        return sum([ z * z - 5000.0 * math.cos(0.1 * math.pi * z) - 4000.0 for z in self.z ])
+        zz = self.x-self.o[:self.D]
+        return sum([ z * z - 5000.0 * math.cos(0.1 * math.pi * z) - 4000.0 for z in zz ])
 
     def g_2(self):
-        self.setup()
-        return - sum([ z * math.sin(0.1 * math.pi * z) for z in self.z ])
+        zz = self.x-self.o[:self.D]
+        return - sum([ z * math.sin(0.1 * math.pi * z) for z in zz ])
 
 class C04(C00):
 
