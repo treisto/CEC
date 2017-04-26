@@ -558,25 +558,30 @@ class C16(C00):
 
 class C17(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+        yy = self.x - self.o[:self.D]
         product = 1.0
         for i in range(self.D):
-            product = product * (math.cos(self.y[i] / math.sqrt(i+1)))
-        return 1.0/4000.0 * sum([ y * y for y in self.y ]) + 1.0 - product
+            product = product * (math.cos(yy[i] / math.sqrt(i+1)))
+        return 1.0/4000.0 * sum([ y * y for y in yy ]) + 1.0 - product
 
     def g_1(self):
+        y = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D):
             SumY = 0.0
             for j in range(self.D):
                 if not i == j:
-                    SumY += self.y[j] * self.y[j]
-            result += numpy.sign(abs(self.y[i]) - SumY - 1.0)
+                    SumY += y[j] * y[j]
+            result += numpy.sign(abs(y[i]) - SumY - 1.0)
         return 1.0 - result
 
     def g_2(self):
-        return sum([ y * y for y in self.y ]) - 4 * self.D
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y for y in yy ]) - 4 * self.D
 
 class C18(C00):
 
