@@ -478,22 +478,28 @@ class C12(C00):
 
 class C13(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1, -1])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        y = self.y
+        y = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D-1):
             result += 100.0 * (y[i] * y[i] - y[i+1]) ** 2 + (y[i] - 1) ** 2
         return result
 
     def g_1(self):
-        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ]) - 100.0
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in yy ]) - 100.0
 
     def g_2(self):
-        return sum([ y for y in self.y ]) - 2 * self.D
+        yy = self.x - self.o[:self.D]
+        return sum([ y for y in yy ]) - 2 * self.D
 
     def g_3(self):
-        return 5.0 - sum([ y for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return 5.0 - sum([ y for y in yy ])
+
 
 class C14(C00):
 
