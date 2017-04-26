@@ -240,21 +240,18 @@ class C04(C00):
     def __init__(self):
         C00.__init__(self, senses=[-1, -1], bounds=(-10,10))
 
-    def setup(self):
-        self.z = self.x - self.o[:self.D]
-
     def obj_1(self):
-        self.setup()
-        return sum([ z * z - 10 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return sum([ z * z - 10 * math.cos(2 * math.pi * z) + 10.0 for z in zz ])
 
     def g_1(self):
-        self.setup()
-        return - sum([ z * math.sin(2 * z) for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return - sum([ z * math.sin(2 * z) for z in zz ])
 
     def g_2(self):
-        self.setup()
-        return sum([ z * math.sin(z) for z in self.z ])
-
+        zz = self.x - self.o[:self.D]
+        return sum([ z * math.sin(z) for z in zz ])
+		
 class C05(C00):
 
     def __init__(self):
