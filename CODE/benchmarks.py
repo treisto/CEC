@@ -810,27 +810,33 @@ class C25(C00):
 
 class C26(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
         self.M = numpy.loadtxt("./inputData/M_26_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
+
+    def obj_1(self):
+        yy = self.x - self.o[:self.D]
         product = 1.0
         for i in range(self.D):
-            product = product * math.cos(self.y[i] / math.sqrt(i+1))
-        return 1.0/4000.0 * sum([ y * y for y in self.y ]) + 1.0 - product
+            product = product * math.cos(yy[i] / math.sqrt(i+1))
+        return 1.0/4000.0 * sum([ y * y for y in yy ]) + 1.0 - product
 
     def g_1(self):
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
         result = 0.0
         for i in range(self.D):
             sumz = 0.0
             for j in range(self.D):
                 if not i == j:
-                    sumz += self.z[j] ** 2
-            result += numpy.sign(abs(self.z[i]) - sumz - 1.0)
+                    sumz += z[j] ** 2
+            result += numpy.sign(abs(z[i]) - sumz - 1.0)
         return 1.0 - result
 
     def g_2(self):
-        return sum([ z * z for z in self.z]) - 4.0 * self.D
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z for z in zz]) - 4.0 * self.D
 
 class C27(C00):
 
