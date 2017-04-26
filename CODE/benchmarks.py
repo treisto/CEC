@@ -251,7 +251,7 @@ class C04(C00):
     def g_2(self):
         zz = self.x - self.o[:self.D]
         return sum([ z * math.sin(z) for z in zz ])
-		
+
 class C05(C00):
 
     def __init__(self):
@@ -275,7 +275,7 @@ class C05(C00):
         z = self.x - self.o[:self.D]
         ww = numpy.dot(self.M2, z)
         return sum([ w * w - 50.0 * math.cos(2 * math.pi * w) - 40.0 for w in ww ])
-		
+
 class C06(C00):
 
     def __init__(self):
@@ -308,7 +308,7 @@ class C06(C00):
     def g_6(self):
         zz = self.x - self.o[:self.D]
         return -sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in zz])
-		
+
 class C07(C00):
 
     def __init__(self):
@@ -500,7 +500,6 @@ class C13(C00):
         yy = self.x - self.o[:self.D]
         return 5.0 - sum([ y for y in yy ])
 
-
 class C14(C00):
 
     def __init__(self):
@@ -519,7 +518,7 @@ class C14(C00):
     def g_2(self):
         yy = self.x - self.o[:self.D]
         return sum([ y * y for y in yy ]) - 4
-		
+
 class C15(C00):
 
     def __init__(self):
@@ -913,24 +912,24 @@ if  __name__ == "__main__":
     test_problem(C08)
     test_problem(C09)
     test_problem(C10)
-    # test_problem(C11, senses=[-1, 0])
-    # test_problem(C12, senses=[-1, 0])
-    # test_problem(C13, senses=[-1, -1, -1])
-    # test_problem(C14, senses=[-1, 0])
-    # test_problem(C15, senses=[-1, 0])
-    # test_problem(C16, senses=[-1, 0])
-    # test_problem(C17, senses=[-1, 0])
-    # test_problem(C18, senses=[-1, -1, 0])
-    # test_problem(C19, senses=[-1, -1], bounds=(-50,50))
-    # test_problem(C20, senses=[-1, -1])
-    # test_problem(C21, senses=[-1, 0])
-    # test_problem(C22, senses=[-1, -1, -1])
-    # test_problem(C23, senses=[-1, 0])
-    # test_problem(C24, senses=[-1, 0])
-    # test_problem(C25, senses=[-1, 0])
-    # test_problem(C26, senses=[-1, 0])
-    # test_problem(C27, senses=[-1, -1, 0])
-    # test_problem(C28, senses=[-1, -1], bounds=(-50,50))
+    test_problem(C11)
+    test_problem(C12)
+    test_problem(C13)
+    test_problem(C14)
+    test_problem(C15)
+    test_problem(C16)
+    test_problem(C17)
+    test_problem(C18)
+    test_problem(C19)
+    test_problem(C20)
+    test_problem(C21)
+    test_problem(C22)
+    test_problem(C23)
+    test_problem(C24)
+    test_problem(C25)
+    test_problem(C26)
+    test_problem(C27)
+    test_problem(C28)
 
 class G04(Benchmark):
 
