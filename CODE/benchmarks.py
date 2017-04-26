@@ -870,20 +870,27 @@ class C27(C00):
 
 class C28(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1], bounds=(-50,50))
         self.M = numpy.loadtxt("./inputData/M_28_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
-        return sum([ math.sqrt(abs(z)) + 2.0 * math.sin(z * z * z) for z in self.z ])
+
+    def obj_1(self):
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ math.sqrt(abs(z)) + 2.0 * math.sin(z * z * z) for z in zz ])
 
     def g_1(self):
+        yy = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, yy)
         result = 0.0
         for i in range(self.D-1):
-            result += -10.0 * math.exp(-0.2 * math.sqrt(self.z[i] ** 2 + self.z[i+1] ** 2))
-        return 1.0 - sum([ abs(y) for y in self.y ]) + (self.D - 1.0) * 10.0 / math.exp(-5)
+            result += -10.0 * math.exp(-0.2 * math.sqrt(z[i] ** 2 + z[i+1] ** 2))
+        return 1.0 - sum([ abs(y) for y in yy ]) + (self.D - 1.0) * 10.0 / math.exp(-5)
 
     def g_2(self):
-        return sum([ math.sin(2.0 * z) ** 2 for z in self.z]) - 0.5 * self.D
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ math.sin(2.0 * z) ** 2 for z in zz]) - 0.5 * self.D
 
 if  __name__ == "__main__":
 
