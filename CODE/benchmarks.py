@@ -680,17 +680,23 @@ class C20(C00):
 
 class C21(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
         self.M = numpy.loadtxt("./inputData/M_21_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
-        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ])
+
+    def obj_1(self):
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in yy ])
 
     def g_1(self):
-        return 4.0 - sum([ abs(z) for z in self.z ])
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return 4.0 - sum([ abs(z) for z in zz ])
 
     def g_2(self):
-        return sum([ z * z for z in self.z ]) - 4.0
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z for z in zz ]) - 4.0
 
 class C22(C00):
 
