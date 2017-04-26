@@ -635,18 +635,23 @@ class C18(C00):
 
 class C19(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1], bounds=(-50,50))
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        return sum([ math.sqrt(abs(y)) + 2 * math.sin(y * y * y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return sum([ math.sqrt(abs(y)) + 2 * math.sin(y * y * y) for y in yy ])
 
     def g_1(self):
+        y = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D-1):
-            result += -10.0 * math.exp(-0.2 * math.sqrt(self.y[i] ** 2 + self.y[i+1] ** 2)) + (self.D - 1) * 10.0 / math.exp(-5.0)
+            result += -10.0 * math.exp(-0.2 * math.sqrt(y[i] ** 2 + y[i+1] ** 2)) + (self.D - 1) * 10.0 / math.exp(-5.0)
         return result
 
     def g_2(self):
-        return sum([ math.sin(2.0 * y) **2 for y in self.y ]) - 0.5 * self.D
+        yy = self.x - self.o[:self.D]
+        return sum([ math.sin(2.0 * y) **2 for y in yy ]) - 0.5 * self.D
 
 class C20(C00):
 
