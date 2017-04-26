@@ -176,21 +176,19 @@ class C00(Benchmark):
 
 class C01(C00):
 
-    def __init__(self):
-        C00.__init__(self)
-        self.z=self.x-self.o[:self.D]
-
     def obj_1(self):
+        z = self.x-self.o[:self.D]
         result=0
         for i in range (self.D):
             SumZ = 0.0
             for j in range (i):
-                SumZ += self.z[j]
+                SumZ += z[j]
             result += SumZ**2
         return result
 
     def g_1(self):
-        return sum([ z * z - 5000 * math.cos(0.1 * math.pi * z) - 4000 for z in self.z])
+        zz = self.x-self.o[:self.D]
+        return sum([ z * z - 5000 * math.cos(0.1 * math.pi * z) - 4000 for z in zz])
 
 class C02(C00):
 
