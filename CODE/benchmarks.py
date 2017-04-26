@@ -733,22 +733,29 @@ class C22(C00):
 
 class C23(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
         self.M = numpy.loadtxt("./inputData/M_23_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
-        z2 = sum([ z * z for z in self.z ])
-        cosz = sum([ math.cos(2 * math.pi * z) for z in self.z ])
+
+    def obj_1(self):
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        z2 = sum([ z * z for z in zz ])
+        cosz = sum([ math.cos(2 * math.pi * z) for z in zz ])
         return -20.0 * math.exp(-0.2 * math.sqrt(1.0/self.D * z2)) + 20.0 - math.exp(1.0/self.D * cosz) + math.e
 
     def g_1(self):
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
         result = 0.0
         for i in range(1, self.D):
-            result += self.z[i] ** 2
-        return result + 1.0 - abs(self.z[0])
+            result += z[i] ** 2
+        return result + 1.0 - abs(z[0])
 
     def g_2(self):
-        return sum([ z * z for z in self.z]) - 4.0
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z for z in zz]) - 4.0
 
 class C24(C00):
 
