@@ -256,30 +256,26 @@ class C05(C00):
 
     def __init__(self):
         C00.__init__(self, senses=[-1, -1], bounds=(-10,10))
-
-    def setup(self):
         self.M1 = numpy.loadtxt("./inputData/M1_5_D" + str(self.D) + ".txt", dtype=numpy.float32)
         self.M2 = numpy.loadtxt("./inputData/M2_5_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = self.x - self.o[:self.D]
-        self.y = numpy.dot(self.M1, self.z)
-        self.w = numpy.dot(self.M2, self.z)
 
     def obj_1(self):
-        self.setup()
-        z = self.z
+        z = self.x - self.o[:self.D]
         result = 0.0
         for i in range (self.D - 1):
             result += 100.0 * (z[i] * z[i] - z[i+1]) ** 2 + (z[i] - 1) ** 2
         return result
 
     def g_1(self):
-        self.setup()
-        return sum([ y * y - 50.0 * math.cos(2 * math.pi * y) - 40.0 for y in self.y ])
+        z = self.x - self.o[:self.D]
+        yy = numpy.dot(self.M1, z)
+        return sum([ y * y - 50.0 * math.cos(2 * math.pi * y) - 40.0 for y in yy ])
 
     def g_2(self):
-        self.setup()
-        return sum([ w * w - 50.0 * math.cos(2 * math.pi * w) - 40.0 for w in self.w ])
-
+        z = self.x - self.o[:self.D]
+        ww = numpy.dot(self.M2, z)
+        return sum([ w * w - 50.0 * math.cos(2 * math.pi * w) - 40.0 for w in ww ])
+		
 class C06(C00):
 
     def __init__(self):
