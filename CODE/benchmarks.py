@@ -540,15 +540,20 @@ class C15(C00):
 
 class C16(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        return sum([ abs(y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return sum([ abs(y) for y in yy ])
 
     def g_1(self):
-        return sum([ y*y for y in self.y ]) - 100.0 * self.D
+        yy = self.x - self.o[:self.D]
+        return sum([ y*y for y in yy ]) - 100.0 * self.D
 
     def g_2(self):
-        fx = sum([ abs(y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        fx = sum([ abs(y) for y in yy ])
         return (math.cos(fx) + math.sin(fx)) ** 2 - math.exp(math.cos(fx) + math.sin(fx)) - 1 + math.exp(1)
 
 class C17(C00):
