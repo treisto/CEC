@@ -380,31 +380,33 @@ class C09(C00):
     def __init__(self):
         C00.__init__(self, senses=[-1, 0], bounds=(-10,10))
 
-    def setup(self):
-        self.z = self.x - self.o[:self.D]
-        self.y = []
-        self.w = []
-        z = list(self.z)
-        while z:
-            self.w.insert(0, z.pop())
-            self.y.insert(0, z.pop())
 
     def obj_1(self):
-        self.setup()
-        return max(self.z)
+        z = self.x - self.o[:self.D]
+        return max(z)
 
     def g_1(self):
-        self.setup()
+        z = list(self.x - self.o[:self.D])
+        y = []
+        w = []
+        while z:
+            w.insert(0, z.pop())
+            y.insert(0, z.pop())
         result = 1.0
         for i in range(self.D2):
-            result = result * self.w[i]
+            result = result * w[i]
         return result
 
     def g_2(self):
-        self.setup()
+        z = list(self.x - self.o[:self.D])
+        y = []
+        w = []
+        while z:
+            w.insert(0, z.pop())
+            y.insert(0, z.pop())
         result = 0.0
         for i in range(self.D2-1):
-            result += (self.y[i] * self.y[i] - self.y[i+1]) ** 2
+            result += (y[i] * y[i] - y[i+1]) ** 2
         return result
 
 class C10(C00):
@@ -412,28 +414,25 @@ class C10(C00):
     def __init__(self):
         C00.__init__(self, senses=[0, 0])
 
-    def setup(self):
-        self.z = self.x - self.o[:self.D]
-
     def obj_1(self):
-        self.setup()
-        return max(self.z)
+        z = self.x - self.o[:self.D]
+        return max(z)
 
     def g_1(self):
-        self.setup()
+        z = self.x - self.o[:self.D]
         result = 0.0
         for i in range (self.D):
             SumZ = 0.0
             for j in range (i):
-                SumZ += self.z[i]
+                SumZ += z[i]
             result += SumZ**2
         return result
 
     def g_2(self):
-        self.setup()
+        z = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D-1):
-            result += (self.z[i] - self.z[i+1]) ** 2
+            result += (z[i] - z[i+1]) ** 2
         return result
 
 class C11(C00):
