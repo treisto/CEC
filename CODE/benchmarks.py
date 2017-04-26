@@ -437,21 +437,26 @@ class C10(C00):
 
 class C11(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
     def obj_1(self):
-        self.z = self.x - self.o[:self.D]
-        return sum(self.z)
+        z = self.x - self.o[:self.D]
+        return sum(z)
 
     def g_1(self):
+        z = self.x - self.o[:self.D]
         result = 1.0
         for i in range(self.D):
-            result = result * self.z[i]
+            result = result * z[i]
         return result
 
     def g_2(self):
+        z = self.x - self.o[:self.D]
         'same as C10.h_2'
         result = 0.0
         for i in range(self.D-1):
-            result += (self.z[i] - self.z[i+1]) ** 2
+            result += (z[i] - z[i+1]) ** 2
         return result
 
 class C12(C00):
