@@ -519,6 +519,24 @@ class C14(C00):
     def g_2(self):
         yy = self.x - self.o[:self.D]
         return sum([ y * y for y in yy ]) - 4
+		
+class C15(C00):
+
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
+    def obj_1(self):
+        yy = self.x - self.o[:self.D]
+        return max([ abs(y) for y in yy ])
+
+    def g_1(self):
+        yy = self.x - self.o[:self.D]
+        return sum([ y*y for y in yy ]) - 100.0 * self.D
+
+    def g_2(self):
+        yy = self.x - self.o[:self.D]
+        fx = max([ abs(y) for y in yy ])
+        return math.cos(fx) + math.sin(fx)
 
 class C16(C00):
 
