@@ -782,18 +782,31 @@ class C24(C00):
 
 class C25(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
         self.M = numpy.loadtxt("./inputData/M_25_D" + str(self.D) + ".txt", dtype=numpy.float32)
+
+    def setup(self):
+        self.y = self.x - self.o[:self.D]
         self.z = numpy.dot(self.M, self.y)
         self.fz = sum([ abs(z) for z in self.z ])
-        return self.fz
+
+    def obj_1(self):
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        fz = sum([ abs(z) for z in zz ])
+        return fz
 
     def g_1(self):
-        return sum([ z * z for z in self.z]) - 100.0 * self.D
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z for z in zz]) - 100.0 * self.D
 
     def g_2(self):
-        return (math.cos(self.fz) + math.sin(self.fz)) ** 2 - math.exp(math.cos(self.fz) + math.sin(self.fz)) - 1.0 + math.exp(1.0)
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        fz = sum([ abs(z) for z in zz ])
+        return (math.cos(fz) + math.sin(fz)) ** 2 - math.exp(math.cos(fz) + math.sin(fz)) - 1.0 + math.exp(1.0)
 
 class C26(C00):
 
