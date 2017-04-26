@@ -194,25 +194,22 @@ class C02(C00):
 
     def __init__(self):
         C00.__init__(self, bounds=(-10,10))
-
-    def setup(self):
         self.M = numpy.loadtxt("./inputData/M_2_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = self.x - self.o[:self.D]
-        self.y = numpy.dot(self.M, self.z)
 
     def obj_1(self):
-        self.setup()
+        z = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D):
             SumZ = 0.0
             for j in range (i):
-                SumZ += self.z[j]
+                SumZ += z[j]
             result = SumZ**2
         return result
 
     def g_1(self):
-        self.setup()
-        return sum([ y * y - 5000 * math.cos(0.1 * math.pi * y) - 4000 for y in self.y ])
+        z = self.x - self.o[:self.D]
+        yy = numpy.dot(self.M, z)
+        return sum([ y * y - 5000 * math.cos(0.1 * math.pi * y) - 4000 for y in yy ])
 
 class C03(C00):
 
