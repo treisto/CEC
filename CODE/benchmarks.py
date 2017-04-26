@@ -655,22 +655,27 @@ class C19(C00):
 
 class C20(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1])
+
     def g(self, y1, y2):
         return 0.5 + ( math.sin(math.sqrt(y1 * y1 + y2 * y2)) ** 2 + 0.5) / (1.0 + 0.001 * math.sqrt(y1 * y1 + y2 * y2)) ** 2
 
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+        y = self.x - self.o[:self.D]
         result = 0.0
         for i in range(self.D-1):
-            result += self.g(self.y[i], self.y[i+1])
-        return result + self.g(self.y[self.D-1], self.y[0])
+            result += self.g(y[i], y[i+1])
+        return result + self.g(y[self.D-1], y[0])
 
     def g_1(self):
-        s = sum([ y * y for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        s = sum([ y * y for y in yy ])
         return math.cos(s) ** 2 - 0.25 * math.cos(s) - 0.125
 
     def g_2(self):
-        s = sum([ y * y for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        s = sum([ y * y for y in yy ])
         return math.exp(math.cos(s)) - math.exp(0.25)
 
 class C21(C00):
