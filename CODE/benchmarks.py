@@ -281,37 +281,34 @@ class C06(C00):
     def __init__(self):
         C00.__init__(self, senses=[0]*6, bounds=(-20,20))
 
-    def setup(self):
-        self.z = self.x - self.o[:self.D]
-
     def obj_1(self):
-        self.setup()
-        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+        zz = self.x - self.o[:self.D]
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in zz ])
 
     def g_1(self):
-        self.setup()
-        return -sum([z * math.sin(z) for z in self.z])
+        zz = self.x - self.o[:self.D]
+        return -sum([z * math.sin(z) for z in zz])
 
     def g_2(self):
-        self.setup()
-        return sum([z * math.sin(math.pi * z) for z in self.z])
+        zz = self.x - self.o[:self.D]
+        return sum([z * math.sin(math.pi * z) for z in zz])
 
     def g_3(self):
-        self.setup()
-        return -sum([z * math.cos(z) for z in self.z])
+        zz = self.x - self.o[:self.D]
+        return -sum([z * math.cos(z) for z in zz])
 
     def g_4(self):
-        self.setup()
-        return sum([z * math.sin(math.pi * z) for z in self.z])
+        zz = self.x - self.o[:self.D]
+        return sum([z * math.sin(math.pi * z) for z in zz])
 
     def g_5(self):
-        self.setup()
-        return sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in self.z])
+        zz = self.x - self.o[:self.D]
+        return sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in zz])
 
     def g_6(self):
-        self.setup()
-        return -sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in self.z])
-
+        zz = self.x - self.o[:self.D]
+        return -sum([z * math.sin(2.0 * math.sqrt(abs(z))) for z in zz])
+		
 class C07(C00):
 
     def __init__(self):
