@@ -840,25 +840,32 @@ class C26(C00):
 
 class C27(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1, 0])
         self.M = numpy.loadtxt("./inputData/M_27_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
-        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ])
+
+    def obj_1(self):
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in zz ])
 
     def g_1(self):
-        return 1.0 - sum([ abs(y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return 1.0 - sum([ abs(y) for y in yy ])
 
     def g_2(self):
-        return sum([ z * z for z in self.z]) - 100.0 * self.D
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z for z in zz]) - 100.0 * self.D
 
     def g_3(self):
+        y = self.x - self.o[:self.D]
         product = 1.0
         for i in range(self.D):
-            product = product * math.sin(self.y[i] - 1.0) ** 2 * math.pi
+            product = product * math.sin(y[i] - 1.0) ** 2 * math.pi
         result = 0.0
         for i in range(self.D-1):
-            result += 100.0 * (self.y[i] ** 2 - self.y[i+1]) ** 2
+            result += 100.0 * (y[i] ** 2 - y[i+1]) ** 2
         return result + product
 
 class C28(C00):
