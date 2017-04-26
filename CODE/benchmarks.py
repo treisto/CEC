@@ -585,28 +585,52 @@ class C17(C00):
 
 class C18(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1, 0])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        self.z = []
-        for y in self.y:
+        yy = self.x - self.o[:self.D]
+        zz = []
+        for y in yy:
             if abs(y) < 0.5:
-                self.z.append(y)
+                zz.append(y)
             else:
-                self.z.append(0.5 * round(2.0 * y))
-        return sum([ z * z - math.cos(2.0 * math.pi * z) + 10.0 for z in self.z ])
+                zz.append(0.5 * round(2.0 * y))
+        return sum([ z * z - math.cos(2.0 * math.pi * z) + 10.0 for z in zz ])
 
     def g_1(self):
-        return 1.0 - sum([ abs(y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        zz = []
+        for y in yy:
+            if abs(y) < 0.5:
+                zz.append(y)
+            else:
+                zz.append(0.5 * round(2.0 * y))
+        return 1.0 - sum([ abs(y) for y in yy ])
 
     def g_2(self):
-        return sum([ y * y for y in self.y ]) - 100.0 * self.D
+        yy = self.x - self.o[:self.D]
+        zz = []
+        for y in yy:
+            if abs(y) < 0.5:
+                zz.append(y)
+            else:
+                zz.append(0.5 * round(2.0 * y))
+        return sum([ y * y for y in yy ]) - 100.0 * self.D
 
     def g_3(self):
+        yy = self.x - self.o[:self.D]
+        zz = []
+        for y in yy:
+            if abs(y) < 0.5:
+                zz.append(y)
+            else:
+                zz.append(0.5 * round(2.0 * y))
         result = 1.0
         for i in range(self.D):
-            result = result * (math.sin(self.y[i] - 1) ** 2) * math.pi
+            result = result * (math.sin(yy[i] - 1) ** 2) * math.pi
         for i in range(self.D-1):
-            result += 100.0 * (self.y[i] * self.y[i] - self.y[i+1]) ** 2
+            result += 100.0 * (yy[i] * yy[i] - yy[i+1]) ** 2
         return result
 
 class C19(C00):
