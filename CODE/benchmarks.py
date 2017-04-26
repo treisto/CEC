@@ -700,23 +700,36 @@ class C21(C00):
 
 class C22(C00):
 
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
+    def __init__(self):
+        C00.__init__(self, senses=[-1, -1, -1])
         self.M = numpy.loadtxt("./inputData/M_22_D" + str(self.D) + ".txt", dtype=numpy.float32)
-        self.z = numpy.dot(self.M, self.y)
+
+    def setup(self):
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
+
+    def obj_1(self):
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
         result = 0.0
         for i in range(self.D):
-            result += 100 * (self.z[i] ** 2 - self.x[i] ** 2) ** 2 + (self.z[i] - 1.0) ** 2
+            result += 100 * (z[i] ** 2 - self.x[i] ** 2) ** 2 + (z[i] - 1.0) ** 2
         return result
 
     def g_1(self):
-        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in self.z ]) - 100.0
+        y = self.x - self.o[:self.D]
+        zz = numpy.dot(self.M, y)
+        return sum([ z * z - 10.0 * math.cos(2 * math.pi * z) + 10.0 for z in zz ]) - 100.0
 
     def g_2(self):
-        return sum(self.z) - 2.0 * self.D
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
+        return sum(z) - 2.0 * self.D
 
     def g_3(self):
-        return 5.0 - sum(self.z)
+        y = self.x - self.o[:self.D]
+        z = numpy.dot(self.M, y)
+        return 5.0 - sum(z)
 
 class C23(C00):
 
