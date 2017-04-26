@@ -503,30 +503,22 @@ class C13(C00):
 
 class C14(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        return (-20.0 * math.exp(-0.2 * math.sqrt(1.0/self.D * sum([ y * y for y in self.y ])))
-            + 20.0 - math.exp( 1.0/self.D * sum([ math.cos(2 * math.pi * y) for y in self.y ]) )
+        yy = self.x - self.o[:self.D]
+        return (-20.0 * math.exp(-0.2 * math.sqrt(1.0/self.D * sum([ y * y for y in yy ])))
+            + 20.0 - math.exp( 1.0/self.D * sum([ math.cos(2 * math.pi * y) for y in yy ]) )
             + math.e)
 
     def g_1(self):
-        return sum([ y * y for y in self.y[1:] + 1 - abs(self.y[0]) ])
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y for y in yy[1:] + 1 - abs(yy[0]) ])
 
     def g_2(self):
-        return sum([ y * y for y in self.y ]) - 4
-
-class C15(C00):
-
-    def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        return max([ abs(y) for y in self.y ])
-
-    def g_1(self):
-        return sum([ y*y for y in self.y ]) - 100.0 * self.D
-
-    def g_2(self):
-        fx = max([ abs(y) for y in self.y ])
-        return math.cos(fx) + math.sin(fx)
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y for y in yy ]) - 4
 
 class C16(C00):
 
