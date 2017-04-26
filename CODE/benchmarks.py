@@ -461,15 +461,20 @@ class C11(C00):
 
 class C12(C00):
 
+    def __init__(self):
+        C00.__init__(self, senses=[-1, 0])
+
     def obj_1(self):
-        self.y = self.x - self.o[:self.D]
-        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y - 10.0 * math.cos(2 * math.pi * y) + 10.0 for y in yy ])
 
     def g_1(self):
-        return 4 - sum([ abs(y) for y in self.y ])
+        yy = self.x - self.o[:self.D]
+        return 4 - sum([ abs(y) for y in yy ])
 
     def g_2(self):
-        return sum([ y * y for y in self.y ]) - 4
+        yy = self.x - self.o[:self.D]
+        return sum([ y * y for y in yy ]) - 4
 
 class C13(C00):
 
